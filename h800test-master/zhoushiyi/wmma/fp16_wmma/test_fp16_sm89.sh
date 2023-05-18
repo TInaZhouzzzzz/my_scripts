@@ -10,6 +10,8 @@ nvcc wmma_fp16_compare1_3.cu -arch sm_89 -o run_wmma_fp16_compare1_3
 
 nvcc wmma_fp16_compare1_4.cu -arch sm_89 -o run_wmma_fp16_compare1_4
 
+nvcc wmma_fp16_compare1_5.cu -arch sm_89 -o run_wmma_fp16_compare1_5
+
 nvcc wmma_fp16_test2.cu -arch sm_89 -o run_wmma_fp16_test2
 
 nvcc wmma_fp16_compare2_1.cu -arch sm_89 -o run_wmma_fp16_compare2_1
@@ -50,6 +52,9 @@ echo "run_wmma_fp16_compare1_3, reslut: "
 
 echo "run_wmma_fp16_compare1_4, reslut: "
 ./run_wmma_fp16_compare1_4
+
+echo "run_wmma_fp16_compare1_5, reslut: "
+./run_wmma_fp16_compare1_5
 
 
 echo "run_wmma_fp16_test2, reslut: "
