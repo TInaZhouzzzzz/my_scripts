@@ -80,12 +80,12 @@ int main(int argc, char** argv){
   InitZero(host_c, size);
   InitZero(host_d, size);
   FP32 fp32;
+  fp32.i = 0x3f800000; host_a[0]=fp32.f;
+  fp32.i = 0x3f800000; host_a[1]=fp32.f;
   fp32.i = 0x3f800000; host_a[4]=fp32.f;
   fp32.i = 0x3f800000; host_a[5]=fp32.f;
 
-  fp32.i = 0x3f800000; host_c[0]=fp32.f;
-  fp32.i = 0x3f800000; host_a[3]=fp32.f;
-  fp32.i = 0x4c000000; host_a[4]=fp32.f;
+  fp32.i = 0x4c000000; host_c[0]=fp32.f;
 
   cudaMemcpy((void*)device_a, (void*)host_a, sizeof(float)* size/2, cudaMemcpyHostToDevice);
   cudaMemcpy((void*)device_b, (void*)host_b, sizeof(float)* size/2, cudaMemcpyHostToDevice);
