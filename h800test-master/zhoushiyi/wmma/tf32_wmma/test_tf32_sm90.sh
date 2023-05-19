@@ -12,7 +12,7 @@ nvcc wmma_tf32_test3.cu -arch sm_90 -o run_wmma_tf32_test3
 
 nvcc wmma_tf32_test4.cu -arch sm_90 -o run_wmma_tf32_test4
 
-nvcc wmma_tf32_compare5.cu -arch sm_90 -o run_wmma_tf32_compare5
+nvcc wmma_tf32_test5.cu -arch sm_90 -o run_wmma_tf32_test5
 
 
 echo "run_wmma_tf32_test1, reslut: "
@@ -33,7 +33,7 @@ echo "run_wmma_tf32_test3, reslut: "
 echo "run_wmma_tf32_test4, reslut: "
 ./run_wmma_tf32_test4
 
-echo "run_wmma_tf32_compare5, reslut: "
-./run_wmma_tf32_compare5
+echo "run_wmma_tf32_test5, reslut: "
+./run_wmma_tf32_test5
 
 rm  run_wmma_tf32_*
