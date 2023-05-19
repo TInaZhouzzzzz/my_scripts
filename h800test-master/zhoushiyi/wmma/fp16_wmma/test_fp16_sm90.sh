@@ -10,7 +10,7 @@ nvcc wmma_fp16_compare1_3.cu -arch sm_90 -o run_wmma_fp16_compare1_3
 
 nvcc wmma_fp16_compare1_4.cu -arch sm_90 -o run_wmma_fp16_compare1_4
 
-nvcc wmma_fp16_compare1_5.cu -arch sm_89 -o run_wmma_fp16_compare1_5
+nvcc wmma_fp16_compare1_5.cu -arch sm_90 -o run_wmma_fp16_compare1_5
 
 nvcc wmma_fp16_test2.cu -arch sm_90 -o run_wmma_fp16_test2
 
