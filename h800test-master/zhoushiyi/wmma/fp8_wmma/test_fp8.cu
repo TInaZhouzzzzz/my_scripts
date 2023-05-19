@@ -68,19 +68,13 @@ int main(int argc, char** argv){
   cudaMalloc((void**)(&device_a), sizeof(float) * size);
   cudaMalloc((void**)(&device_b), sizeof(float) * size);
   cudaMalloc((void**)(&device_d), sizeof(float) * size);
-  FP32 fp32;
-  fp32.i = 0x3838;
   for(int i=0;i<size;i++){
-    host_a[i] = fp32.f;
-  }
-  fp32.i = 0x3c3c;
-  for(int i=0;i<size;i++){
-    host_b[i] = fp32.f;
+    host_a[i] =0.0;
+    host_b[i] =0.0;
+    host_d[i] = 0.0;
   }
   fp32.i = 0x3c000000;
-  for(int i=0;i<size;i++){
-    host_d[i] = fp32.f;
-  }
+
   cudaMemcpy((void*)device_a, (void*)host_a, sizeof(float)* size, cudaMemcpyHostToDevice);
   cudaMemcpy((void*)device_b, (void*)host_b, sizeof(float)* size, cudaMemcpyHostToDevice);
   //cudaMemcpy((void*)device_d, (void*)host_d, sizeof(float)* size, cudaMemcpyHostToDevice);
