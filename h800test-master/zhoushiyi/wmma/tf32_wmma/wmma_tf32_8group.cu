@@ -1,5 +1,3 @@
-#include "cuda_fp16.h"
-#include <cstdint>
 #include <iostream>
 #include <cuda.h>
 #include <cuda_fp16.h>
@@ -24,6 +22,18 @@ union FP16
     unsigned short int i;
     __half f;
 };
+
+//__global__ void test(float* dst, __half* a, __half* b, float* c){
+__global__ void test(float* d, float* a, float* b, float* c){
+  asm volatile(
+ // "ld.param.u64    %rd1, [_Z4testPfP6__halfS1_S__param_0];\n\t"
+    ".reg .b32 a<8>, b<8>, c<8>,d<8>;\n\t"
+    "wmma.load.a.sync.aligned.m16n16k8.global.row.tf32 {a0, a1, a2, a3, a4, a5, a6, a7}, [%1];\n\t"
+    "wmma.load.b.sync.aligned.m16n16k8.global.col.tf32 {b0, b1, b2, b3, b4, b5, b6, b7}, [%2];\n\t"
+    "wmma.load.c.sync.aligned.m16n16k8.global.row.f32 {c0, c1, c2, c3, c4, c5, c6, c7}, [%3];\n\t"
+    "wmma.mma.sync.aligned.m16n16k8.row.col.f32.tf32.tf32.f32 {d0,d1,d2,d3,d4,d5,d6,d7}, {a0, a1, a2, a3, a4, a5, a6, a7}, {b0, b1, b2, b3, b4, b5, b6, b7}, {c0, c1, c2, c3, c4, c5, c6, c7};\n\t"
+    "wmma.store.d.sync.aligned.m16n16k8.global.row.f32 [%0], {d0,d1,d2,d3,d4,d5,d6,d7};" : "=l"(d): "l"(a), "l"(b), "l"(c));
+}
 
 void InitOne(__half* a, const int n) {
   for ( int i = 0; i < n; i++ ) {
@@ -53,45 +63,23 @@ void show(float * a, const int n) {
 }
 
 
-
-
-__global__ void wgmma_test1(float *gm_cd, __half *a_desc,  __half *b_desc) {
-  float d_array[4];
-  for (int i = 0; i < 4; ++i) {
-    d_array[i] = gm_cd[i];
-  }
-  asm volatile("{\n\t"
-               "wgmma.mma_async.sync.aligned.m64n8k16.f32.f16.f16\n\t"
-               "{%0, %1, %2, %3}, %4, %5,1,1,1,0,0;\n\t"
-               "}\n\t"
-               : "+f"(d_array[0]), "+f"(d_array[1]), "+f"(d_array[2]),
-                 "+f"(d_array[3])
-               : "l"(a_desc), "l"(b_desc)
-               :);
-
-  for (int i = 0; i < 4; ++i) {
-    gm_cd[i] = d_array[i];
-  }
-}
-
-
 int main(int argc, char** argv){
-  int size = 64;
+  int size = 256;
   __half* host_a=(__half*)malloc(sizeof(__half) * size);
   __half* host_b=(__half*)malloc(sizeof(__half) * size);
-//float* host_c=(float*)malloc(sizeof(float) * size);
+  float* host_c=(float*)malloc(sizeof(float) * size);
   float* host_d=(float*)malloc(sizeof(float) * size);
   __half* device_a=NULL;
   __half* device_b=NULL;
-//float* device_c=NULL;
+  float* device_c=NULL;
   float* device_d=NULL;
   cudaMalloc((void**)(&device_a), sizeof(__half) * size);
   cudaMalloc((void**)(&device_b), sizeof(__half) * size);
-//cudaMalloc((void**)(&device_c), sizeof(float) * size);
+  cudaMalloc((void**)(&device_c), sizeof(float) * size);
   cudaMalloc((void**)(&device_d), sizeof(float) * size);
   InitZero(host_a, size);
   InitOne(host_b, size);
-//InitZero_float(host_c, size);
+  InitZero_float(host_c, size);
   InitZero_float(host_d, size);
 
   FP16 fp16;
@@ -106,10 +94,10 @@ int main(int argc, char** argv){
 
   cudaMemcpy((void*)device_a, (void*)host_a, sizeof(__half)* size, cudaMemcpyHostToDevice);
   cudaMemcpy((void*)device_b, (void*)host_b, sizeof(__half)* size, cudaMemcpyHostToDevice);
-//cudaMemcpy((void*)device_c, (void*)host_c, sizeof(float)* size, cudaMemcpyHostToDevice);
+  cudaMemcpy((void*)device_c, (void*)host_c, sizeof(float)* size, cudaMemcpyHostToDevice);
   cudaMemcpy((void*)device_d, (void*)host_d, sizeof(float)* size, cudaMemcpyHostToDevice);
 
-  wgmma_test1<<<1,32>>>(device_d, device_a, device_b);
+  test<<<1,32>>>(device_d, device_a, device_b, device_c);
   cudaDeviceSynchronize();
 
   cudaMemcpy((void*)host_d, (void*)device_d, sizeof(float) * size, cudaMemcpyDeviceToHost);
