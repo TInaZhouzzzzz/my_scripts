@@ -60,14 +60,15 @@ __global__ void wgmma_test1(float *gm_cd, __half *a_desc,  __half *b_desc) {
   for (int i = 0; i < 4; ++i) {
     d_array[i] = gm_cd[i];
   }
-  asm volatile("{\n\t"
-               "wgmma.mma_async.sync.aligned.m64n8k16.f32.f16.f16\n\t"
-               "{%0, %1, %2, %3}, %4, %5,1,1,1,0,0;\n\t"
-               "}\n\t"
-               : "+f"(d_array[0]), "+f"(d_array[1]), "+f"(d_array[2]),
-                 "+f"(d_array[3])
-               : "l"(a_desc), "l"(b_desc)
-               :);
+  printf("hello");
+//asm volatile("{\n\t"
+//             "wgmma.mma_async.sync.aligned.m64n8k16.f32.f16.f16\n\t"
+//             "{%0, %1, %2, %3}, %4, %5,1,1,1,0,0;\n\t"
+//             "}\n\t"
+//             : "+f"(d_array[0]), "+f"(d_array[1]), "+f"(d_array[2]),
+//               "+f"(d_array[3])
+//             : "l"(a_desc), "l"(b_desc)
+//             :);
 
   for (int i = 0; i < 4; ++i) {
     gm_cd[i] = d_array[i];
@@ -76,7 +77,8 @@ __global__ void wgmma_test1(float *gm_cd, __half *a_desc,  __half *b_desc) {
 
 
 int main(int argc, char** argv){
-  int size = 64;
+  printf("hello");
+  int size = 256;
   __half* host_a=(__half*)malloc(sizeof(__half) * size);
   __half* host_b=(__half*)malloc(sizeof(__half) * size);
 //float* host_c=(float*)malloc(sizeof(float) * size);
@@ -97,12 +99,12 @@ int main(int argc, char** argv){
   FP16 fp16;
   fp16.i = 0x7000; host_a[0]=fp16.f;
   fp16.i = 0x0c00; host_a[1]=fp16.f;
-  fp16.i = 0x0c00; host_a[2]=fp16.f;
-  fp16.i = 0x0c00; host_a[3]=fp16.f;
-  fp16.i = 0x0c00; host_a[4]=fp16.f;
-  fp16.i = 0x0c00; host_a[5]=fp16.f;
-  fp16.i = 0x0c00; host_a[6]=fp16.f;
-  fp16.i = 0x0c00; host_a[7]=fp16.f;
+  fp16.i = 0xffff; host_a[2]=fp16.f;
+  fp16.i = 0xffff; host_a[3]=fp16.f;
+  fp16.i = 0xffff; host_a[4]=fp16.f;
+  fp16.i = 0xffff; host_a[5]=fp16.f;
+  fp16.i = 0xffff; host_a[6]=fp16.f;
+  fp16.i = 0xffff; host_a[7]=fp16.f;
 
   cudaMemcpy((void*)device_a, (void*)host_a, sizeof(__half)* size, cudaMemcpyHostToDevice);
   cudaMemcpy((void*)device_b, (void*)host_b, sizeof(__half)* size, cudaMemcpyHostToDevice);
