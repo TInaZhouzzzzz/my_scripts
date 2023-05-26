@@ -57,11 +57,11 @@ void show(float * a, const int n) {
 
 __global__ void wgmma_test1(float *d, __half *a,  __half *b) {
   asm volatile("{\n\t"
-               "ld.param.u64 	%rd2, [_Z11wgmma_test1PfP6__halfS1__param_0];\nt"
-               ".reg .f32 d<4>;\n\t"
+               "ld.param.u64 	%rd2, [_Z11wgmma_test1PfP6__halfS1__param_0];\n\t"
+               ".reg .b32 d<4>;\n\t"
                "wgmma.mma_async.sync.aligned.m64n8k16.f32.f16.f16\n\t"
                "{d0, d1, d2, d3}, %1, %2,1,1,1,0,0;\n\t"
-               "st.f32 [%0], d0;\n\t"
+               "st.f32 [%0], 1.0;\n\t"
                "}\n\t"
                : "=l"(d) : "l"(a), "l"(b));
 }

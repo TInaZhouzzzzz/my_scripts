@@ -212,8 +212,8 @@ int main(int argc, char *argv[]) {
   algo = CUBLAS_GEMM_ALGO0_TENSOR_OP;
   cout << "  Use tf32 acceleration! " << endl; 
 #else 
-  math_type = CUBLAS_DEFAULT_MATH; algo = CUBLAS_GEMM_DEFAULT;
-  // math_type = CUBLAS_TENSOR_OP_MATH; algo = CUBLAS_GEMM_ALGO0_TENSOR_OP;
+//math_type = CUBLAS_DEFAULT_MATH; algo = CUBLAS_GEMM_DEFAULT;
+  math_type = CUBLAS_TENSOR_OP_MATH; algo = CUBLAS_GEMM_ALGO0_TENSOR_OP;
   com_type = CUBLAS_COMPUTE_32F;
   cout << "  Use fp16 acceleration! " << endl; 
 #endif

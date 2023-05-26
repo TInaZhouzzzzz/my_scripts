@@ -1,0 +1,3 @@
+[submodule "h800test-master/h800test-master/cutlass"]
+	path = h800test-master/h800test-master/cutlass
+	url = https://github.com/NVIDIA/cutlass.git
